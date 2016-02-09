@@ -1,8 +1,6 @@
 package model;
 
-import contract.IPortfolio;
-
-public class Portfolio implements IPortfolio{
+public class Portfolio{
 
 	public void buy(String cusip, int shares, double price) {
 		
