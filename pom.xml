@@ -12,7 +12,7 @@
 
   <build>    
     
-    <directory>${dir.output}</directory>
+    <!-- <directory>${dir.output}</directory>-->
     
     <plugins>
       <plugin>
