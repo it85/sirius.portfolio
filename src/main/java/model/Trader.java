@@ -1,6 +1,10 @@
 package model;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import contract.ITrader;
+import exception.InsufficientFundsException;
 
 /**
  * A Trader instance which encapsulates a set of core behaviors necessary to manipulate a Portfolio, e.g buy and sell securities.
@@ -12,16 +16,20 @@ public class Trader implements ITrader {
 
 	private Portfolio portfolio;
 	
-	public Trader(){
-		this.portfolio = new Portfolio();
+	public Trader(double startingBalance){
+		this.portfolio = new Portfolio(startingBalance);
 	}
 	
-	public void buy(String cusip, int shares, double price) {
-		this.portfolio.buy(cusip, shares, price);		
+	public void buy(String cusip, int shares, double price, Date date) {
+		try {
+			this.portfolio.buy(cusip, shares, new BigDecimal(price), date);
+		} catch (InsufficientFundsException e) {
+			// what do we do here?
+		}		
 	}
 
-	public void sell(String cusip, int shares, double price) {
-		this.portfolio.sell(cusip, shares, price);		
+	public void sell(String cusip, int shares, double price, Date date) {
+		this.portfolio.sell(cusip, shares, new BigDecimal(price), date);
 	}
 
 }

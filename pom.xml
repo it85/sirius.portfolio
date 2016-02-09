@@ -3,4 +3,39 @@
   <groupId>com.sirius</groupId>
   <artifactId>portfolio</artifactId>
   <version>1.0</version>
+  
+  <properties>
+  	<dir.output>
+  	  C:/Isaac/dev/builds/com.sirius.portfolio/target
+  	</dir.output>
+  </properties>
+
+  <build>    
+    
+    <directory>${dir.output}</directory>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+     </plugin>
+    </plugins>
+  </build>
+  
+  
+  <dependencies>
+	<dependency>
+	  <groupId>junit</groupId>
+	  <artifactId>junit</artifactId>
+	  <version>4.12</version>
+	  <scope>test</scope>
+	</dependency>
+  </dependencies>
+  
+  
 </project>
