@@ -10,14 +10,18 @@ import contract.ITrader;
  */
 public class Trader implements ITrader {
 
+	private Portfolio portfolio;
+	
+	public Trader(){
+		this.portfolio = new Portfolio();
+	}
+	
 	public void buy(String cusip, int shares, double price) {
-		// TODO Auto-generated method stub
-		
+		this.portfolio.buy(cusip, shares, price);		
 	}
 
 	public void sell(String cusip, int shares, double price) {
-		// TODO Auto-generated method stub
-		
+		this.portfolio.sell(cusip, shares, price);		
 	}
 
 }
