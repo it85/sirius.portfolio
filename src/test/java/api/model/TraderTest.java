@@ -44,8 +44,8 @@ public class TraderTest {
 	@Test
 	public void testTraderPortfolio(){
 		
-		BigDecimal startingBalanceBD = new BigDecimal(startingBalance);
-		BigDecimal securitiesBalanceBD = new BigDecimal(0);
+		BigDecimal startingBalanceBD = new BigDecimal("10000.00");
+		BigDecimal securitiesBalanceBD = new BigDecimal("0.00");
 		
 		assertEquals(startingBalanceBD, trader.getPortfolio().getTotalBalance());
 		assertEquals(startingBalanceBD, trader.getPortfolio().getCashBalance());
@@ -122,7 +122,7 @@ public class TraderTest {
 		BigDecimal securitiesBalance = new BigDecimal("187.50");
 		BigDecimal cashBalance = new BigDecimal("9812.50");
 		
-		BigDecimal startingBalanceBD = new BigDecimal(startingBalance);
+		BigDecimal startingBalanceBD = new BigDecimal("10000.00");
 		
 		assertEquals(startingBalanceBD, trader.getPortfolio().getTotalBalance());
 		assertEquals(securitiesBalance, trader.getPortfolio().getSecuritiesBalance());

@@ -1,6 +1,7 @@
 package model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,15 +68,15 @@ public class Portfolio {
 //	}
 
 	public BigDecimal getTotalBalance() {
-		return totalBalance;
+		return totalBalance.setScale(2, RoundingMode.HALF_UP);
 	}
 
 	public BigDecimal getCashBalance() {
-		return cashBalance;
+		return cashBalance.setScale(2, RoundingMode.HALF_UP);
 	}
 
 	public BigDecimal getSecuritiesBalance() {
-		return securitiesBalance;
+		return securitiesBalance.setScale(2, RoundingMode.HALF_UP);
 	}
 
 	public Map<String, Position> getPositions() {
