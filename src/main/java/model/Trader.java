@@ -28,4 +28,7 @@ public class Trader implements ITrader {
 		this.portfolio.sell(cusip, shares, new BigDecimal(price), date);
 	}
 
+	public Portfolio getPortfolio() {
+		return portfolio;
+	}
 }
