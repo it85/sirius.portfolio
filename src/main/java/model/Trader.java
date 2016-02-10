@@ -20,12 +20,8 @@ public class Trader implements ITrader {
 		this.portfolio = new Portfolio(startingBalance);
 	}
 	
-	public void buy(String cusip, int shares, double price, Date date) {
-		try {
-			this.portfolio.buy(cusip, shares, new BigDecimal(price), date);
-		} catch (InsufficientFundsException e) {
-			// what do we do here?
-		}		
+	public void buy(String cusip, int shares, double price, Date date) throws InsufficientFundsException {
+		this.portfolio.buy(cusip, shares, new BigDecimal(price), date);
 	}
 
 	public void sell(String cusip, int shares, double price, Date date) {
