@@ -29,7 +29,7 @@ public class Portfolio {
 		
 		BigDecimal orderTotal = buyPrice.multiply(new BigDecimal(shares));
 		
-		if(sufficientFunds(orderTotal)){
+		if(buyOrderSufficientFunds(orderTotal)){
 			
 			if(!positions.containsKey(cusip)){
 				Position p = new Position(cusip, buyPrice, shares, dateOpened);		
@@ -54,21 +54,22 @@ public class Portfolio {
 			Position position = positions.get(cusip);
 			BigDecimal totalProceeds = sellPrice.multiply(new BigDecimal(shares));
 			
-			if(totalProceeds.compareTo(position.getValue()) < 1){				
+			if(position.sellOrderSufficientFunds(totalProceeds)){				
 				position.sell(sellPrice, shares);
 				this.updateBalancesPostSell(totalProceeds);		
 			}else{
-				throw new InvalidSellOrderException("Sell order total proceeds (" + totalProceeds +
-						") exceeds value of position (" + position.getValue() + ").");
+				throw new InvalidSellOrderException("Sell order total proceeds: " + totalProceeds +
+						", Position value: " + position.getValue());
 			}
 		}else{
 			throw new InvalidSellOrderException("Position for cusip " + cusip + " does not exist");
 		}
 	}
 	
-	protected boolean sufficientFunds(BigDecimal orderTotal){		
-		return this.cashBalance.compareTo(orderTotal) > 0;
-	}
+	private boolean buyOrderSufficientFunds(BigDecimal orderTotal){		
+		return (this.cashBalance.compareTo(orderTotal) == 1) && (orderTotal.compareTo(new BigDecimal(0)) != 0);
+	}	
+	
 	
 	private void updateBalancesPostBuy(BigDecimal orderTotal){
 		this.cashBalance = this.cashBalance.subtract(orderTotal);

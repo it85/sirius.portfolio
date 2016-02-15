@@ -52,6 +52,10 @@ public class Position {
 			this.open = false;
 		}
 	}
+	
+	protected boolean sellOrderSufficientFunds(BigDecimal totalProceeds){
+		return (totalProceeds.compareTo(this.getValue()) < 1) && (totalProceeds.compareTo(new BigDecimal(0)) != 0);
+	}
 
 	protected void close(Date date, BigDecimal sellPrice) {
 		this.dateClosed = date;

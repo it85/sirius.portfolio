@@ -166,6 +166,17 @@ public class TraderBuyTest {
 		BigDecimal secondVwap = new BigDecimal("3.57");		
 		assertEquals(secondVwap, trader.getPortfolio().getPositions().get(cusip).getVwap());
 	}
+	
+	@Test(expected=InvalidBuyOrderException.class)
+	public void testBuyZeroShares() throws InvalidBuyOrderException {
+		
+		String cusip = "SPY";
+		int shares = 0;
+		double buyPrice = 3.75;
+		Date dateOpened = new Date();
+		
+		trader.buy(cusip, shares, buyPrice, dateOpened);
+	}
 
 	@Test
 	public void testGetPortfolio() {

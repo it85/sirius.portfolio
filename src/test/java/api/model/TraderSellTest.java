@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import exception.InvalidBuyOrderException;
 import exception.InvalidSellOrderException;
 import model.Trader;
 
@@ -81,6 +82,39 @@ public class TraderSellTest {
 		assertEquals(true, trader.getPortfolio().getPositions().get(cusip).getOpen());
 		assertEquals(17, trader.getPortfolio().getPositions().get(cusip).getShares());
 		assertEquals(new BigDecimal("4.01"), trader.getPortfolio().getPositions().get(cusip).getVwap());
+	}
+	
+	@Test(expected=InvalidSellOrderException.class)
+	public void testSellProceedsExeceedPositionValue() throws InvalidSellOrderException {
+		
+		String cusip = "SPY";
+		int shares = 500;
+		double buyPrice = 1000;
+		Date dateOpened = new Date();
+		
+		trader.sell(cusip, shares, buyPrice, dateOpened);
+	}
+	
+	@Test(expected=InvalidSellOrderException.class)
+	public void testNonexistentPosition() throws InvalidSellOrderException {
+		
+		String cusip = "FB";
+		int shares = 500;
+		double buyPrice = 1000;
+		Date dateOpened = new Date();
+		
+		trader.sell(cusip, shares, buyPrice, dateOpened);
+	}
+	
+	@Test(expected=InvalidSellOrderException.class)
+	public void testSellZeroShares() throws InvalidSellOrderException {
+		
+		String cusip = "SPY";
+		int shares = 0;
+		double buyPrice = 3.75;
+		Date dateOpened = new Date();
+		
+		trader.sell(cusip, shares, buyPrice, dateOpened);
 	}
 
 }
