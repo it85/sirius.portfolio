@@ -1,6 +1,7 @@
 package api.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -153,5 +154,38 @@ public class TraderSellTest {
 		Date dateOpened = new Date();
 		
 		trader.sell(cusip, shares, buyPrice, dateOpened);
+	}
+	
+	@Test
+	public void testSellOrderHistory() {
+		String cusip = "SPY";
+		int shares = 33;
+		double sellPrice = 4.01;
+		Date date = new Date();
+		
+		assertEquals(1, trader.getPortfolio().getPositions().size());
+		
+		try {
+			trader.sell(cusip, shares, sellPrice, date);
+		} catch (InvalidSellOrderException e) {
+			e.printStackTrace();
+		}
+		
+		assertEquals(1, trader.getPortfolio().getPositions().size());
+		assertEquals(true, trader.getPortfolio().getPositions().get(cusip).getOpen());
+		assertEquals(17, trader.getPortfolio().getPositions().get(cusip).getShares());
+		assertEquals(new BigDecimal("3.75"), trader.getPortfolio().getPositions().get(cusip).getVwap());
+		assertEquals(new BigDecimal("4.01"), trader.getPortfolio().getPositions().get(cusip).getLastSalePrice());
+		
+		assertNotNull(trader.getPortfolio().getOrderHistory());
+		assertNotNull(trader.getPortfolio().getOrderHistory().get(cusip));
+		assertEquals(2, trader.getPortfolio().getOrderHistory().get(cusip).size());
+		
+		try {
+			trader.sell(cusip, 1, buyPrice, dateOpened);
+		} catch (InvalidSellOrderException e) {
+			e.printStackTrace();
+		}		
+		assertEquals(3, trader.getPortfolio().getOrderHistory().get(cusip).size());
 	}
 }

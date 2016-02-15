@@ -177,6 +177,47 @@ public class TraderBuyTest {
 		
 		trader.buy(cusip, shares, buyPrice, dateOpened);
 	}
+	
+	@Test
+	public void testBuyOrderHistory(){
+		String cusip = "SPY";
+		int shares = 50;
+		double buyPrice = 3.75;
+		Date dateOpened = new Date();
+		
+		assertEquals(0, trader.getPortfolio().getPositions().size());
+		assertFalse(trader.getPortfolio().getPositions().containsKey(cusip));
+		
+		try {
+			trader.buy(cusip, shares, buyPrice, dateOpened);
+		} catch (InvalidBuyOrderException e) {
+			e.printStackTrace();
+		}
+
+		BigDecimal securitiesBalance = new BigDecimal("187.50");
+		BigDecimal cashBalance = new BigDecimal("9812.50");
+		
+		BigDecimal startingBalanceBD = new BigDecimal("10000.00");
+		
+		assertEquals(startingBalanceBD, trader.getPortfolio().getTotalBalance());
+		assertEquals(securitiesBalance, trader.getPortfolio().getSecuritiesBalance());
+		assertEquals(cashBalance, trader.getPortfolio().getCashBalance());
+		assertEquals(1, trader.getPortfolio().getPositions().size());
+		
+		assertTrue(trader.getPortfolio().getPositions().containsKey(cusip));
+		
+		assertNotNull(trader.getPortfolio().getOrderHistory());
+		assertNotNull(trader.getPortfolio().getOrderHistory().get(cusip));
+		assertEquals(1, trader.getPortfolio().getOrderHistory().get(cusip).size());
+		
+		try {
+			trader.buy(cusip, shares, buyPrice, dateOpened);
+		} catch (InvalidBuyOrderException e) {
+			e.printStackTrace();
+		}
+		
+		assertEquals(2, trader.getPortfolio().getOrderHistory().get(cusip).size());		
+	}
 
 	@Test
 	public void testGetPortfolio() {
