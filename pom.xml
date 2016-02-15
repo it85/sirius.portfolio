@@ -4,16 +4,7 @@
   <artifactId>portfolio</artifactId>
   <version>1.0</version>
   
-  <properties>
-  	<dir.output>
-  	  C:/Isaac/dev/builds/com.sirius.portfolio/target
-  	</dir.output>
-  </properties>
-
-  <build>    
-    
-    <!-- <directory>${dir.output}</directory>-->
-    
+  <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
