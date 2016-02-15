@@ -64,6 +64,30 @@ public class TraderSellTest {
 	}
 	
 	@Test
+	public void testFullSell1() {
+		
+		String cusip = "SPY";
+		int shares = 50;
+		double sellPrice = 4.02;
+		Date date = new Date();
+		
+		assertEquals(1, trader.getPortfolio().getPositions().size());
+		
+		try {
+			trader.sell(cusip, shares, sellPrice, date);
+		} catch (InvalidSellOrderException e) {
+			e.printStackTrace();
+		}
+		
+		assertEquals(1, trader.getPortfolio().getPositions().size());
+		assertEquals(false, trader.getPortfolio().getPositions().get(cusip).getOpen());
+		assertEquals(0, trader.getPortfolio().getPositions().get(cusip).getShares());		
+		assertEquals(new BigDecimal("0.00"), trader.getPortfolio().getSecuritiesBalance());
+		assertEquals(new BigDecimal("10013.50"), trader.getPortfolio().getTotalBalance());
+		assertEquals(new BigDecimal("10013.50"), trader.getPortfolio().getCashBalance());
+	}
+	
+	@Test
 	public void testSell1() {
 		String cusip = "SPY";
 		int shares = 33;

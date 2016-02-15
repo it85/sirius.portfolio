@@ -59,7 +59,7 @@ public class Portfolio {
 			
 			if(position.sellOrderSufficientFunds(totalProceeds) && position.sellOrderSufficientShares(shares)){				
 				position.sell(price, shares);
-				this.postSellAccounting(cusip, shares, price, date);		
+				this.postSellAccounting(cusip, shares, price, date, position);		
 			}else{
 				throw new InvalidSellOrderException("Sell order total proceeds: " + totalProceeds +
 						", Position value: " + position.getValue());
@@ -80,9 +80,9 @@ public class Portfolio {
 		this.addBuyOrderToHistory(cusip, shares, price, date);
 	}
 	
-	private void postSellAccounting(String cusip, int shares, BigDecimal price, Date date){		
+	private void postSellAccounting(String cusip, int shares, BigDecimal price, Date date, Position position){		
 		BigDecimal orderTotal = price.multiply(new BigDecimal(shares));
-		this.postSellUpdateBalances(orderTotal);
+		this.postSellUpdateBalances(orderTotal, position);
 		this.addSellOrderToHistory(cusip, shares, price, date);
 	}
 	
@@ -110,9 +110,15 @@ public class Portfolio {
 		this.totalBalance = this.cashBalance.add(this.securitiesBalance);
 	}
 	
-	private void postSellUpdateBalances(BigDecimal totalProceeds){
+	private void postSellUpdateBalances(BigDecimal totalProceeds, Position position){
 		this.cashBalance = this.cashBalance.add(totalProceeds);
-		this.securitiesBalance = this.securitiesBalance.subtract(totalProceeds);
+		
+		if(!position.getOpen()){
+			this.securitiesBalance = new BigDecimal(0);
+		}else{
+			this.securitiesBalance = this.securitiesBalance.subtract(totalProceeds);
+		}
+		
 		this.totalBalance = this.cashBalance.add(this.securitiesBalance);
 	}
 
