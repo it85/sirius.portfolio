@@ -4,7 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import contract.ITrader;
-import exception.InsufficientFundsException;
+import exception.InvalidBuyOrderException;
+import exception.InvalidSellOrderException;
 
 /**
  * A Trader instance which encapsulates a set of core behaviors necessary to manipulate a Portfolio, e.g buy and sell securities.
@@ -20,11 +21,11 @@ public class Trader implements ITrader {
 		this.portfolio = new Portfolio(startingBalance);
 	}
 	
-	public void buy(String cusip, int shares, double price, Date date) throws InsufficientFundsException {
+	public void buy(String cusip, int shares, double price, Date date) throws InvalidBuyOrderException {
 		this.portfolio.buy(cusip, shares, new BigDecimal(price), date);
 	}
 
-	public void sell(String cusip, int shares, double price, Date date) {
+	public void sell(String cusip, int shares, double price, Date date) throws InvalidSellOrderException {
 		this.portfolio.sell(cusip, shares, new BigDecimal(price), date);
 	}
 

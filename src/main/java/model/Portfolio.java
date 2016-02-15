@@ -6,7 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import exception.InsufficientFundsException;
+import exception.InvalidBuyOrderException;
+import exception.InvalidSellOrderException;
 
 public class Portfolio {
 
@@ -24,7 +25,7 @@ public class Portfolio {
 		this.securitiesBalance = new BigDecimal(0.0);
 	}
 	
-	protected void buy(String cusip, int shares, BigDecimal buyPrice, Date dateOpened) throws InsufficientFundsException {
+	protected void buy(String cusip, int shares, BigDecimal buyPrice, Date dateOpened) throws InvalidBuyOrderException {
 		
 		BigDecimal orderTotal = buyPrice.multiply(new BigDecimal(shares));
 		
@@ -40,32 +41,46 @@ public class Portfolio {
 			
 			this.updateBalancesPostBuy(orderTotal);
 		}else{
-			throw new InsufficientFundsException("Cash Balance: " + this.cashBalance + ", Order Total: " + orderTotal);
+			throw new InvalidBuyOrderException("Cash Balance: " + this.cashBalance + ", Order Total: " + orderTotal);
 		}		
 	}
 	
 	
 
-	protected void sell(String cusip, int shares, BigDecimal price, Date date) {
-//		this.updateBalancesPostSell(shares, price);
+	protected void sell(String cusip, int shares, BigDecimal sellPrice, Date date) throws InvalidSellOrderException{
+		
+		if(positions.containsKey(cusip)) {
+		
+			Position position = positions.get(cusip);
+			BigDecimal totalProceeds = sellPrice.multiply(new BigDecimal(shares));
+			
+			if(totalProceeds.compareTo(position.getValue()) < 1){				
+				position.sell(sellPrice, shares);
+				this.updateBalancesPostSell(totalProceeds);		
+			}else{
+				throw new InvalidSellOrderException("Sell order total proceeds (" + totalProceeds +
+						") exceeds value of position (" + position.getValue() + ").");
+			}
+		}else{
+			throw new InvalidSellOrderException("Position for cusip " + cusip + " does not exist");
+		}
 	}
 	
-	protected boolean sufficientFunds(BigDecimal orderTotal){
-		if(this.cashBalance.compareTo(orderTotal) > 0){
-			return true;
-		}else{
-			return false;
-		}
+	protected boolean sufficientFunds(BigDecimal orderTotal){		
+		return this.cashBalance.compareTo(orderTotal) > 0;
 	}
 	
 	private void updateBalancesPostBuy(BigDecimal orderTotal){
 		this.cashBalance = this.cashBalance.subtract(orderTotal);
 		this.securitiesBalance = this.securitiesBalance.add(orderTotal);
+		this.totalBalance = this.cashBalance.add(this.securitiesBalance);
 	}
 	
-//	private void updateBalancesPostSell(int shares, BigDecimal price){
-//		BigDecimal orderTotal = price.multiply(new BigDecimal(shares));
-//	}
+	private void updateBalancesPostSell(BigDecimal totalProceeds){
+		this.cashBalance = this.cashBalance.add(totalProceeds);
+		this.securitiesBalance = this.securitiesBalance.subtract(totalProceeds);
+		this.totalBalance = this.cashBalance.add(this.securitiesBalance);
+	}
 
 	public BigDecimal getTotalBalance() {
 		return totalBalance.setScale(2, RoundingMode.HALF_UP);

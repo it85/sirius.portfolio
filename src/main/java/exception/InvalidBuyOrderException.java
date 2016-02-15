@@ -1,21 +1,21 @@
 package exception;
 
-public class InsufficientFundsException extends Exception{
+public class InvalidBuyOrderException extends Exception{
 
 	private static final long serialVersionUID = 7558019994468955312L;
 	
 	private String message = null;
 	 
-    public InsufficientFundsException() {
+    public InvalidBuyOrderException() {
         super();
     }
  
-    public InsufficientFundsException(String message) {
+    public InvalidBuyOrderException(String message) {
         super(message);
         this.message = message;
     }
  
-    public InsufficientFundsException(Throwable cause) {
+    public InvalidBuyOrderException(Throwable cause) {
         super(cause);
     }
  

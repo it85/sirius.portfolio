@@ -1,6 +1,9 @@
 package api.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -10,10 +13,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import exception.InsufficientFundsException;
+import exception.InvalidBuyOrderException;
+import exception.InvalidSellOrderException;
+import model.Portfolio;
 import model.Trader;
 
-public class TraderTest {
+public class TraderBuyTest {
 
 	static Trader trader;
 	final static double startingBalance = 10000;
@@ -55,8 +60,8 @@ public class TraderTest {
 		assertEquals(trader.getPortfolio().getPositions().size(), 0);
 	}	
 	
-	@Test(expected=InsufficientFundsException.class)
-	public void testBuyInsufficientFunds() throws InsufficientFundsException {
+	@Test(expected=InvalidBuyOrderException.class)
+	public void testBuyInsufficientFunds() throws InvalidBuyOrderException {
 		
 		String cusip = "SPY";
 		int shares = 500;
@@ -76,7 +81,7 @@ public class TraderTest {
 		
 		try {
 			trader.buy(cusip, shares, buyPrice, dateOpened);
-		} catch (InsufficientFundsException e) {
+		} catch (InvalidBuyOrderException e) {
 			e.printStackTrace();
 		}
 		
@@ -94,7 +99,7 @@ public class TraderTest {
 		try {
 			trader.buy(cusip, shares, buyPrice, dateOpened);
 			trader.buy(cusip, shares, buyPrice, dateOpened);
-		} catch (InsufficientFundsException e) {
+		} catch (InvalidBuyOrderException e) {
 			e.printStackTrace();
 		}
 		
@@ -115,7 +120,7 @@ public class TraderTest {
 		
 		try {
 			trader.buy(cusip, shares, buyPrice, dateOpened);
-		} catch (InsufficientFundsException e) {
+		} catch (InvalidBuyOrderException e) {
 			e.printStackTrace();
 		}
 
@@ -142,7 +147,7 @@ public class TraderTest {
 		
 		try {
 			trader.buy(cusip, shares, buyPrice, dateOpened);
-		} catch (InsufficientFundsException e) {
+		} catch (InvalidBuyOrderException e) {
 			e.printStackTrace();
 		}
 		
@@ -154,22 +159,17 @@ public class TraderTest {
 		
 		try {
 			trader.buy(cusip, shares, buyPrice, dateOpened);
-		} catch (InsufficientFundsException e) {
+		} catch (InvalidBuyOrderException e) {
 			e.printStackTrace();
 		}
 		
 		BigDecimal secondVwap = new BigDecimal("3.57");		
 		assertEquals(secondVwap, trader.getPortfolio().getPositions().get(cusip).getVwap());
 	}
-	
-	@Test
-	public void testSell() {
-//		fail("Not yet implemented");
-	}
 
 	@Test
 	public void testGetPortfolio() {
-//		fail("Not yet implemented");
+		Portfolio p = trader.getPortfolio();
+		assertNotNull(p);
 	}
-
 }

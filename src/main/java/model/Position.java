@@ -8,7 +8,6 @@ public class Position {
 
 	protected BigDecimal value;
 	protected BigDecimal vwap;
-	protected BigDecimal sellPrice;
 
 	protected Date dateOpened;
 	protected Date dateClosed;
@@ -39,12 +38,24 @@ public class Position {
 	}
 
 	protected void sell(BigDecimal sellPrice, int shares) {
-
+		
+		this.value = sellPrice.multiply(new BigDecimal(this.shares));
+		
+		this.shares -= shares;
+		
+		BigDecimal totalProceeds = sellPrice.multiply(new BigDecimal(shares));
+		this.value = this.value.subtract(totalProceeds);
+		
+		if(this.shares != 0){
+			this.vwap = this.value.divide(new BigDecimal(this.shares));
+		}else{
+			this.open = false;
+		}
 	}
 
 	protected void close(Date date, BigDecimal sellPrice) {
 		this.dateClosed = date;
-		this.sellPrice = sellPrice;
+//		this.vwap = sellPrice;
 		this.open = false;
 	}
 
@@ -54,10 +65,6 @@ public class Position {
 
 	public BigDecimal getVwap() {
 		return vwap.setScale(2, RoundingMode.HALF_UP);
-	}
-
-	public BigDecimal getSellPrice() {
-		return sellPrice.setScale(2, RoundingMode.HALF_UP);
 	}
 
 	public Date getDateOpened() {
