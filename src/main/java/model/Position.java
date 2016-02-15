@@ -15,7 +15,7 @@ public class Position {
 
 	protected Boolean open;
 
-	protected String cusip;
+	protected String symbol;
 
 	protected int shares;
 
@@ -23,7 +23,7 @@ public class Position {
 		this.dateOpened = dateOpened;
 		this.shares = shares;
 		this.buyVWAP = buyPrice;
-		this.cusip = cusip;
+		this.symbol = cusip;
 		this.open = true;
 		this.value = buyPrice.multiply(new BigDecimal(shares));
 	}
@@ -92,8 +92,8 @@ public class Position {
 		return open;
 	}
 
-	public String getCusip() {
-		return cusip;
+	public String getSymbol() {
+		return symbol;
 	}
 
 	public int getShares() {

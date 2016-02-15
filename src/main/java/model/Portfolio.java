@@ -28,21 +28,21 @@ public class Portfolio {
 		this.securitiesBalance = new BigDecimal(0.0);
 	}
 	
-	protected void buy(String cusip, int shares, BigDecimal price, Date dateOpened) throws InvalidBuyOrderException {
+	protected void buy(String symbol, int shares, BigDecimal price, Date dateOpened) throws InvalidBuyOrderException {
 		
 		BigDecimal orderTotal = price.multiply(new BigDecimal(shares));
 		
 		if(buyOrderSufficientFunds(orderTotal)){
 			
-			if(!positions.containsKey(cusip)){
-				Position p = new Position(cusip, price, shares, dateOpened);		
-				positions.put(cusip, p);
+			if(!positions.containsKey(symbol)){
+				Position p = new Position(symbol, price, shares, dateOpened);		
+				positions.put(symbol, p);
 			}else{
-				Position p = positions.get(cusip);
+				Position p = positions.get(symbol);
 				p.add(price, shares);
 			}
 			
-			this.postBuyAccounting(cusip, shares, price, dateOpened);
+			this.postBuyAccounting(symbol, shares, price, dateOpened);
 		}else{
 			throw new InvalidBuyOrderException("Cash Balance: " + this.cashBalance + ", Order Total: " + orderTotal);
 		}		
@@ -50,22 +50,22 @@ public class Portfolio {
 	
 	
 
-	protected void sell(String cusip, int shares, BigDecimal price, Date date) throws InvalidSellOrderException{
+	protected void sell(String symbol, int shares, BigDecimal price, Date date) throws InvalidSellOrderException{
 		
-		if(positions.containsKey(cusip)) {
+		if(positions.containsKey(symbol)) {
 		
-			Position position = positions.get(cusip);
+			Position position = positions.get(symbol);
 			BigDecimal totalProceeds = price.multiply(new BigDecimal(shares));
 			
 			if(position.sellOrderSufficientFunds(totalProceeds) && position.sellOrderSufficientShares(shares)){				
 				position.sell(price, shares);
-				this.postSellAccounting(cusip, shares, price, date, position);		
+				this.postSellAccounting(symbol, shares, price, date, position);		
 			}else{
 				throw new InvalidSellOrderException("Sell order total proceeds: " + totalProceeds +
 						", Position value: " + position.getValue());
 			}
 		}else{
-			throw new InvalidSellOrderException("Position for cusip " + cusip + " does not exist");
+			throw new InvalidSellOrderException("Position for cusip " + symbol + " does not exist");
 		}
 	}
 	
@@ -74,34 +74,34 @@ public class Portfolio {
 	}
 	
 	
-	private void postBuyAccounting(String cusip, int shares, BigDecimal price, Date date){		
+	private void postBuyAccounting(String symbol, int shares, BigDecimal price, Date date){		
 		BigDecimal orderTotal = price.multiply(new BigDecimal(shares));
 		this.postBuyUpdateBalances(orderTotal);
-		this.addBuyOrderToHistory(cusip, shares, price, date);
+		this.addBuyOrderToHistory(symbol, shares, price, date);
 	}
 	
-	private void postSellAccounting(String cusip, int shares, BigDecimal price, Date date, Position position){		
+	private void postSellAccounting(String symbol, int shares, BigDecimal price, Date date, Position position){		
 		BigDecimal orderTotal = price.multiply(new BigDecimal(shares));
 		this.postSellUpdateBalances(orderTotal, position);
-		this.addSellOrderToHistory(cusip, shares, price, date);
+		this.addSellOrderToHistory(symbol, shares, price, date);
 	}
 	
-	private void addBuyOrderToHistory(String cusip, int shares, BigDecimal price, Date date){
-		Order order = new BuyOrder(cusip, shares, price, date);
+	private void addBuyOrderToHistory(String symbol, int shares, BigDecimal price, Date date){
+		Order order = new BuyOrder(symbol, shares, price, date);
 		
-		if(!this.orderHistory.containsKey(cusip) || orderHistory.get(cusip) == null)
-			this.orderHistory.put(cusip, new ArrayList<Order>());
+		if(!this.orderHistory.containsKey(symbol) || orderHistory.get(symbol) == null)
+			this.orderHistory.put(symbol, new ArrayList<Order>());
 		
-		this.orderHistory.get(cusip).add(order);		
+		this.orderHistory.get(symbol).add(order);		
 	}
 	
-	private void addSellOrderToHistory(String cusip, int shares, BigDecimal price, Date date){
-		Order order = new SellOrder(cusip, shares, price, date);
+	private void addSellOrderToHistory(String symbol, int shares, BigDecimal price, Date date){
+		Order order = new SellOrder(symbol, shares, price, date);
 		
-		if(!this.orderHistory.containsKey(cusip) || orderHistory.get(cusip) == null)
-			this.orderHistory.put(cusip, new ArrayList<Order>());
+		if(!this.orderHistory.containsKey(symbol) || orderHistory.get(symbol) == null)
+			this.orderHistory.put(symbol, new ArrayList<Order>());
 		
-		this.orderHistory.get(cusip).add(order);		
+		this.orderHistory.get(symbol).add(order);		
 	}
 	
 	private void postBuyUpdateBalances(BigDecimal orderTotal){

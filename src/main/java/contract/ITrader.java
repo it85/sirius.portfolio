@@ -12,7 +12,7 @@ import exception.InvalidSellOrderException;
  */
 public interface ITrader {
 	
-	void buy(String cusip, int shares, double price, Date date) throws InvalidBuyOrderException;
-	void sell(String cusip, int shares, double price, Date date) throws InvalidSellOrderException;
+	void buy(String symbol, int shares, double price, Date date) throws InvalidBuyOrderException;
+	void sell(String symbol, int shares, double price, Date date) throws InvalidSellOrderException;
 
 }
