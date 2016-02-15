@@ -6,6 +6,7 @@ import java.util.Date;
 public abstract class Order {
 	
 	BigDecimal price;
+	BigDecimal amount;
 	Date date;
 	int shares;
 	String cusip;
