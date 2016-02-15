@@ -7,7 +7,8 @@ import java.util.Date;
 public class Position {
 
 	protected BigDecimal value;
-	protected BigDecimal vwap;
+	protected BigDecimal buyVWAP;
+	protected BigDecimal lastSalePrice;
 
 	protected Date dateOpened;
 	protected Date dateClosed;
@@ -21,7 +22,7 @@ public class Position {
 	protected Position(String cusip, BigDecimal buyPrice, int shares, Date dateOpened) {
 		this.dateOpened = dateOpened;
 		this.shares = shares;
-		this.vwap = buyPrice;
+		this.buyVWAP = buyPrice;
 		this.cusip = cusip;
 		this.open = true;
 		this.value = buyPrice.multiply(new BigDecimal(shares));
@@ -33,7 +34,7 @@ public class Position {
 		BigDecimal newValue = buyPrice.multiply(new BigDecimal(shares));
 		BigDecimal totalValue = this.value.add(newValue);
 
-		this.vwap = totalValue.divide(new BigDecimal(totalNewShares));
+		this.buyVWAP = totalValue.divide(new BigDecimal(totalNewShares));
 		this.shares = totalNewShares;
 	}
 
@@ -44,17 +45,21 @@ public class Position {
 		this.shares -= shares;
 		
 		BigDecimal totalProceeds = sellPrice.multiply(new BigDecimal(shares));
-		this.value = this.value.subtract(totalProceeds);
+		this.value = this.value.subtract(totalProceeds);		
+
+		this.lastSalePrice = sellPrice;
 		
-		if(this.shares != 0){
-			this.vwap = this.value.divide(new BigDecimal(this.shares));
-		}else{
+		if(this.shares == 0)
 			this.open = false;
-		}
 	}
 	
 	protected boolean sellOrderSufficientFunds(BigDecimal totalProceeds){
-		return (totalProceeds.compareTo(this.getValue()) < 1) && (totalProceeds.compareTo(new BigDecimal(0)) != 0);
+//		return (totalProceeds.compareTo(this.getValue()) < 1) && (totalProceeds.compareTo(new BigDecimal(0)) != 0);
+		return (totalProceeds.compareTo(new BigDecimal(0)) != 0);
+	}
+	
+	protected boolean sellOrderSufficientShares(int shares){
+		return this.shares >= shares;
 	}
 
 	protected void close(Date date, BigDecimal sellPrice) {
@@ -68,7 +73,11 @@ public class Position {
 	}
 
 	public BigDecimal getVwap() {
-		return vwap.setScale(2, RoundingMode.HALF_UP);
+		return buyVWAP.setScale(2, RoundingMode.HALF_UP);
+	}
+
+	public BigDecimal getLastSalePrice() {
+		return lastSalePrice.setScale(2, RoundingMode.HALF_UP);
 	}
 
 	public Date getDateOpened() {

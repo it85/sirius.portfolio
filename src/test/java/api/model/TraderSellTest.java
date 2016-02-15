@@ -81,7 +81,45 @@ public class TraderSellTest {
 		assertEquals(1, trader.getPortfolio().getPositions().size());
 		assertEquals(true, trader.getPortfolio().getPositions().get(cusip).getOpen());
 		assertEquals(17, trader.getPortfolio().getPositions().get(cusip).getShares());
-		assertEquals(new BigDecimal("4.01"), trader.getPortfolio().getPositions().get(cusip).getVwap());
+		assertEquals(new BigDecimal("3.75"), trader.getPortfolio().getPositions().get(cusip).getVwap());
+		assertEquals(new BigDecimal("4.01"), trader.getPortfolio().getPositions().get(cusip).getLastSalePrice());
+	}
+	
+	@Test
+	public void testSell2() {
+		String cusip = "SPY";
+		int shares = 33;
+		double sellPrice = 4.01;
+		Date date = new Date();
+		
+		assertEquals(1, trader.getPortfolio().getPositions().size());
+		
+		try {
+			trader.sell(cusip, shares, sellPrice, date);
+		} catch (InvalidSellOrderException e) {
+			e.printStackTrace();
+		}
+		
+		assertEquals(1, trader.getPortfolio().getPositions().size());
+		assertEquals(true, trader.getPortfolio().getPositions().get(cusip).getOpen());
+		assertEquals(17, trader.getPortfolio().getPositions().get(cusip).getShares());
+		assertEquals(new BigDecimal("3.75"), trader.getPortfolio().getPositions().get(cusip).getVwap());
+		assertEquals(new BigDecimal("4.01"), trader.getPortfolio().getPositions().get(cusip).getLastSalePrice());
+		
+		shares = 17;
+		sellPrice = 4.05;
+		
+		try {
+			trader.sell(cusip, shares, sellPrice, date);
+		} catch (InvalidSellOrderException e) {
+			e.printStackTrace();
+		}
+		
+		assertEquals(1, trader.getPortfolio().getPositions().size());
+		assertEquals(false, trader.getPortfolio().getPositions().get(cusip).getOpen());
+		assertEquals(0, trader.getPortfolio().getPositions().get(cusip).getShares());
+		assertEquals(new BigDecimal("3.75"), trader.getPortfolio().getPositions().get(cusip).getVwap());
+		assertEquals(new BigDecimal("4.05"), trader.getPortfolio().getPositions().get(cusip).getLastSalePrice());
 	}
 	
 	@Test(expected=InvalidSellOrderException.class)
@@ -116,5 +154,4 @@ public class TraderSellTest {
 		
 		trader.sell(cusip, shares, buyPrice, dateOpened);
 	}
-
 }

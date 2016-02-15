@@ -54,7 +54,7 @@ public class Portfolio {
 			Position position = positions.get(cusip);
 			BigDecimal totalProceeds = sellPrice.multiply(new BigDecimal(shares));
 			
-			if(position.sellOrderSufficientFunds(totalProceeds)){				
+			if(position.sellOrderSufficientFunds(totalProceeds) && position.sellOrderSufficientShares(shares)){				
 				position.sell(sellPrice, shares);
 				this.updateBalancesPostSell(totalProceeds);		
 			}else{
@@ -68,7 +68,7 @@ public class Portfolio {
 	
 	private boolean buyOrderSufficientFunds(BigDecimal orderTotal){		
 		return (this.cashBalance.compareTo(orderTotal) == 1) && (orderTotal.compareTo(new BigDecimal(0)) != 0);
-	}	
+	}
 	
 	
 	private void updateBalancesPostBuy(BigDecimal orderTotal){
