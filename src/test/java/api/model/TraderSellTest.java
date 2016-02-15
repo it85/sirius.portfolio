@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import exception.InvalidBuyOrderException;
 import exception.InvalidSellOrderException;
 import model.Trader;
 
